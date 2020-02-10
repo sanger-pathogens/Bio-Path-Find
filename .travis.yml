@@ -1,22 +1,17 @@
 dist: bionic
-language: perl
 sudo: false
-cache:
-  directories:
-  - perl_modules
-before_install:
-  - cpanm local::lib
-  - eval "$(perl -Mlocal::lib=${PWD}/perl_modules)"
 addons:
   apt:
     packages:
     - libssl-dev
+    - perl
     - libdbd-mysql-perl
     - build-essential
     - libxml2-dev
     - libexpat1-dev
     - libdb-dev
     - libmysqlclient-dev
+    - cpanminus
 install:
   - "source ./install-travis-dependencies.sh"
 script: "dzil test"
