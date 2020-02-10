@@ -1,6 +1,7 @@
 #!/bin/bash
 
 start_dir=$(pwd)
+cpanm --local-lib=${PWD}/perl_modules local::lib && eval $(perl -I ${PWD}/perl_modules/lib/perl5/ -Mlocal::lib)
 
 cpanm --notest Dist::Zilla
 

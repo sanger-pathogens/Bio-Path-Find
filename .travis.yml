@@ -12,9 +12,9 @@ addons:
     - libdb-dev
     - libmysqlclient-dev
     - cpanminus
-before_install:
-  - cpanm local::lib
-  - eval "$(perl -Mlocal::lib=${PWD}/perl_modules)"
+      #before_install:
+      #- cpanm local::lib
+      #- eval "$(perl -Mlocal::lib=${PWD}/perl_modules)"
 install:
   - "source ./install-travis-dependencies.sh"
 script: "dzil test"
