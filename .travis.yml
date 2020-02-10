@@ -10,8 +10,12 @@ addons:
   apt:
     packages:
     - libssl-dev
-perl:
-  - "5.26"
+    - libdbd-mysql-perl
+    - build-essential
+    - libxml2-dev
+    - libexpat1-dev
+    - libdb-dev
+    - libmysqlclient-dev
 install:
   - "source ./install-travis-dependencies.sh"
 script: "dzil test"
