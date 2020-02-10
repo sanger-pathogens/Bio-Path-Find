@@ -2,7 +2,7 @@
 
 start_dir=$(pwd)
 
-cpanm Dist::Zilla --notest
+cpanm --notest Dist::Zilla
 
 git clone https://github.com/sanger-pathogens/Bio-Metagenomics.git
 git clone https://github.com/sanger-pathogens/Bio-Track-Schema.git
