@@ -217,7 +217,10 @@ $expected_stats = [
   ],
 ];
 
-is_deeply $stats, $expected_stats, 'got expected stats';
+my @sorted_stats = sort { $a->[1] cmp $b->[1] } @$stats;
+my @sorted_expected_stats = sort { $a->[1] cmp $b->[1] } @$expected_stats;
+
+is_deeply \@sorted_stats, \@sorted_expected_stats, 'got expected stats';
 
 #-------------------------------------------------------------------------------
 
