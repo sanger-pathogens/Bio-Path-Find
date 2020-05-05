@@ -27,7 +27,8 @@ RUN $helper install_uk_locals \
        libssl-dev \
        libdb-dev \
        cpanminus \
-       libmysqlclient-dev
+       libmysqlclient-dev \
+       perl-doc
 
 # Locals to keep Perl silent
 ENV LANG=en_GB.UTF-8
@@ -59,11 +60,29 @@ RUN git clone https://github.com/sanger-pathogens/Bio-Metagenomics.git /tmp/bio-
     && dzil install \
     && rm -rf /tmp/bio-metagenomic
 
+# some CPAN modules produce errors, and the install must be forced
+# to avoid forcing every install (which in future builds may mask new errors) it's better to force only the problem modules
+# this is done by first installing the problem module's dependencies (so that these aren't forced) and afterwards forcing the install of the problem module
+RUN   for PROBLEM_MODULE in 'XML::DOM::XPath'; do \
+         cpanm --installdeps ${PROBLEM_MODULE}; \
+         cpanm --notest XML::DOM::XPath; \
+      done
+
+# undocumented Bio-Path-Find dependencies
+# if these aren't installed causes Bio::Perl install to fail
+# (specific errors manifest with Bio::AutomatedAnnotation::ParseGenesFromGFFs)
+# this previously had been hidden as all CPAN installs were being done with --force
+RUN   apt-get update && apt-get install --yes 'ncbi-blast+' prodigal parallel hmmer && \
+      cpanm Bio::SearchIO::hmmer
+
 # Bio-Path-Find
 COPY . /tmp/Bio-Path-Find_BUILD
+
 RUN cd /tmp/Bio-Path-Find_BUILD \
-    && dzil authordeps --missing | cpanm --notest \
-    && dzil listdeps --missing | cpanm --notest \
+    && dzil authordeps --missing | cpanm  \
+    && dzil listdeps --missing | cpanm \
     && dzil install \
     && rm -rf /tmp/Bio-Path-Find_BUILD
 
+# check pf is installed and in PATH
+RUN which pf > /dev/null
