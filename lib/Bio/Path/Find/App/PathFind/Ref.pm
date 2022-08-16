@@ -404,7 +404,7 @@ sub run {
        -e $self->_symlink_dest ) {        # but destintation path exists
     # this is an error, but tailor the message according to whether it is a directory
     # (this matters because with other pf commands, the -l/--symlink option
-    # *should* provide a directory name; so it is a likely cause of confusuon for users)
+    # *should* provide a directory name; so it is a likely cause of confusion for users)
     if ( -d $self->_symlink_dest ) {
       Bio::Path::Find::Exception->throw(
         msg => 'ERROR: symlink destination "' . $self->_symlink_dest
