@@ -78,9 +78,18 @@ RUN   apt-get update && apt-get install --yes 'ncbi-blast+' prodigal parallel hm
 # Bio-Path-Find
 COPY . /tmp/Bio-Path-Find_BUILD
 
+# RUN cd /tmp/Bio-Path-Find_BUILD \
+#     && dzil authordeps --missing | cpanm  \
+#     && dzil listdeps --missing | cpanm \
+#     && dzil install \
+#     && rm -rf /tmp/Bio-Path-Find_BUILD
+
 RUN cd /tmp/Bio-Path-Find_BUILD \
-    && dzil authordeps --missing | cpanm  \
-    && dzil listdeps --missing | cpanm \
+    && dzil authordeps --missing | cpanm
+# run cpanm on module one at a time to figure out which one is causing problems
+RUN cd /tmp/Bio-Path-Find_BUILD \
+    && for MODULE in `dzil listdeps --missing`; do cpanm "$MODULE"; done
+RUN cd /tmp/Bio-Path-Find_BUILD \
     && dzil install \
     && rm -rf /tmp/Bio-Path-Find_BUILD
 
