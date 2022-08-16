@@ -399,6 +399,25 @@ has '_paths' => (
 sub run {
   my $self = shift;
 
+  if ( $self->_symlink_flag and           # flag is set; we're making symlinks.
+       $self->_symlink_dest) and          # destination is specified.
+       -e $self->_symlink_dest ) {        # but destintation path exists
+    # this is an error, but tailor the message according to whether it is a directory
+    # (this matters because with other pf commands, the -l/--symlink option
+    # *should* provide a directory name; so it is a likely cause of confusuon for users)
+    if ( -d $self->_symlink_dest ) {
+      Bio::Path::Find::Exception->throw(
+        msg => 'ERROR: symlink destination "' . $self->_symlink_dest
+              . q(" is a directory: please provide a file name for the symlink)
+      );
+    } else {
+      Bio::Path::Find::Exception->throw(
+        msg => 'ERROR: symlink destination "' . $self->_symlink_dest
+              . q(" already exists: cannot create new symlink using that name)
+      );
+    }
+  }
+  
   # given a list of search names, find the reference genome names
   my $refs = $self->_rf->find_refs($self->_ids->[0]);
 
