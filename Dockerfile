@@ -45,7 +45,7 @@ RUN $helper cpanm_install MooseX::App@1.33
 
 
 ARG BIO_TRACK_SCHEMA_TAG=d3b367c 
-RUN $helper dzil_install_no_test https://gitlab.internal.sanger.ac.uk/sanger-pathogens/Bio-Track-Schema.git "${BIO_TRACK_SCHEMA_TAG}"
+RUN $helper dzil_install_no_test https://github.com/sanger-pathogens/Bio-Track-Schema.git "${BIO_TRACK_SCHEMA_TAG}"
 
 ARG BIO_SEQUENCESCAPE_SCHEMA_TAG=eb35104
 RUN $helper dzil_install_no_test https://github.com/sanger-pathogens/Bio-Sequencescape-Schema.git "${BIO_SEQUENCESCAPE_SCHEMA_TAG}"
