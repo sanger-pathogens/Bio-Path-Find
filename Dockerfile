@@ -62,10 +62,8 @@ RUN git clone https://github.com/sanger-pathogens/Bio-Metagenomics.git /tmp/bio-
 # some CPAN modules produce errors, and the install must be forced
 # to avoid forcing every install (which in future builds may mask new errors) it's better to force only the problem modules
 # this is done by first installing the problem module's dependencies (so that these aren't forced) and afterwards forcing the install of the problem module
-RUN   for PROBLEM_MODULE in 'XML::DOM::XPath'; do \
-         cpanm --installdeps ${PROBLEM_MODULE}; \
-         cpanm --notest XML::DOM::XPath; \
-      done
+RUN   cpanm --installdeps 'XML::DOM::XPath' \
+      && cpanm --notest 'XML::DOM::XPath'
 
 # undocumented Bio-Path-Find dependencies
 # if these aren't installed causes Bio::Perl install to fail
@@ -79,8 +77,10 @@ COPY . /tmp/Bio-Path-Find_BUILD
 
 # installs of problematic modules
 # (these are dependencies of modules listed by `dzil listdeps --missing`)
-RUN   cpanm --force Bio::DB::GenPept IO::Interactive \
-      # hack uses --verbose to avoid timing out during dependency checks
+# this is done by first installing the problem module's dependencies (so that these aren't forced) and afterwards forcing the install of the problem module
+# the use of --verbose with IO::Tty is a hack to avoid timing out during dependency checks
+RUN   cpanm --installdeps Bio::DB::GenPept IO::Interactive \
+      && cpanm --notest Bio::DB::GenPept IO::Interactive \
       && cpanm --verbose IO::Tty
 
 # Install.  Tests are broken so use --notest.   This can be used to create
