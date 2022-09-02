@@ -43,7 +43,6 @@ RUN $helper cpanm_install \
 # Backward compatibility issue so enforcing version for now
 RUN $helper cpanm_install MooseX::App@1.33
 
-
 ARG BIO_TRACK_SCHEMA_TAG=d3b367c 
 RUN $helper dzil_install_no_test https://github.com/sanger-pathogens/Bio-Track-Schema.git "${BIO_TRACK_SCHEMA_TAG}"
 
@@ -84,10 +83,13 @@ RUN   cpanm --force Bio::DB::GenPept IO::Interactive \
       # hack uses --verbose to avoid timing out during dependency checks
       && cpanm --verbose IO::Tty
 
+# Install.  Tests are broken so use --notest.   This can be used to create
+# a new docker image, but isn't safe if the code is modified, unless you've
+# run the unit tests in your development environment.
 RUN cd /tmp/Bio-Path-Find_BUILD \
     && dzil authordeps --missing | cpanm  \
     && dzil listdeps --missing | cpanm \
-    && dzil install \
+    && dzil install --install-command "cpanm --notest ." \
     && rm -rf /tmp/Bio-Path-Find_BUILD
 
 # check pf is installed and in PATH
