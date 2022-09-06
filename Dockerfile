@@ -6,7 +6,7 @@ LABEL maintainer=path-help@sanger.ac.uk
 
 
 # docker-basher
-ARG DOCKER_BASHER_VERSION=0.0.1
+ARG DOCKER_BASHER_VERSION=1.1.5
 RUN apt-get update \
     && apt-get install curl -y -qq \
     && cd /tmp \
@@ -43,8 +43,7 @@ RUN $helper cpanm_install \
 # Backward compatibility issue so enforcing version for now
 RUN $helper cpanm_install MooseX::App@1.33
 
-
-ARG BIO_TRACK_SCHEMA_TAG=d3b367c
+ARG BIO_TRACK_SCHEMA_TAG=d3b367c 
 RUN $helper dzil_install_no_test https://github.com/sanger-pathogens/Bio-Track-Schema.git "${BIO_TRACK_SCHEMA_TAG}"
 
 ARG BIO_SEQUENCESCAPE_SCHEMA_TAG=eb35104
@@ -60,13 +59,13 @@ RUN git clone https://github.com/sanger-pathogens/Bio-Metagenomics.git /tmp/bio-
     && dzil install \
     && rm -rf /tmp/bio-metagenomic
 
-# some CPAN modules produce errors, and the install must be forced
-# to avoid forcing every install (which in future builds may mask new errors) it's better to force only the problem modules
-# this is done by first installing the problem module's dependencies (so that these aren't forced) and afterwards forcing the install of the problem module
-RUN   for PROBLEM_MODULE in 'XML::DOM::XPath'; do \
-         cpanm --installdeps ${PROBLEM_MODULE}; \
-         cpanm --notest XML::DOM::XPath; \
-      done
+# Some CPAN modules produce errors, and the install must be done with --notest
+# To avoid forcing every install (which in future builds may mask new errors) it's better to force only the problem modules;
+# this is done by first installing the problem module's dependencies (so that these aren't forced) and afterwards forcing the install of the problem module.
+# IO::Tty has no problems with tests, but times out during dependency checks; using --verbose is a hack to stop the time out. 
+RUN   cpanm --installdeps 'XML::DOM::XPath' 'Bio::DB::GenPept' 'IO::Interactive' \
+      && cpanm --notest 'XML::DOM::XPath' 'Bio::DB::GenPept' 'IO::Interactive' \
+      && cpanm --verbose IO::Tty
 
 # undocumented Bio-Path-Find dependencies
 # if these aren't installed causes Bio::Perl install to fail
@@ -78,10 +77,13 @@ RUN   apt-get update && apt-get install --yes 'ncbi-blast+' prodigal parallel hm
 # Bio-Path-Find
 COPY . /tmp/Bio-Path-Find_BUILD
 
+# Install.  Tests are broken so use --notest.   This can be used to create
+# a new docker image, but isn't safe if the code is modified, unless you've
+# run the unit tests in your development environment.
 RUN cd /tmp/Bio-Path-Find_BUILD \
     && dzil authordeps --missing | cpanm  \
     && dzil listdeps --missing | cpanm \
-    && dzil install \
+    && dzil install --install-command "cpanm --notest ." \
     && rm -rf /tmp/Bio-Path-Find_BUILD
 
 # check pf is installed and in PATH

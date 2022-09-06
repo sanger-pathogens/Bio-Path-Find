@@ -35,7 +35,7 @@ with 'Bio::Path::Find::Role::HasProgressBar';
 # ("-l mydir"). It's a bit fiddly to set that up...
 
 option 'symlink' => (
-  documentation => 'create symlinks for data files in the specified directory',
+  documentation => 'create symlinks for data files: provide directory name for links to directories, or a file name for links to files',
   is            => 'ro',
   cmd_aliases   => 'l',
   trigger       => \&_check_for_symlink_value,

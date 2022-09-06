@@ -1,0 +1,8 @@
+# don't include Dockerfile in build content,because then any trivial change causes
+# the COPY tobe run again in the docker build
+Dockerfile
+
+.git
+.gitignore
+.build
+.travis.yml
