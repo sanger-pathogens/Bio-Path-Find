@@ -1,7 +1,6 @@
 # Bio-Path-Find
 A tool for finding information about pathogen sequencing runs.
 
-[![Build Status](https://travis-ci.org/sanger-pathogens/Bio-Path-Find.svg?branch=master)](https://travis-ci.org/sanger-pathogens/Bio-Path-Find)    
 [![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-brightgreen.svg)](https://github.com/sanger-pathogens/Bio-Path-Find/blob/master/software-license)   
 
 ## Contents
