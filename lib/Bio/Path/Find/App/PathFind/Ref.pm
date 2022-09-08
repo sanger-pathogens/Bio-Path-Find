@@ -400,7 +400,7 @@ sub run {
   my $self = shift;
 
   if ( $self->_symlink_flag and           # flag is set; we're making symlinks.
-       $self->_symlink_dest) and          # destination is specified.
+       $self->_symlink_dest and          # destination is specified.
        -e $self->_symlink_dest ) {        # but destintation path exists
     # this is an error, but tailor the message according to whether it is a directory
     # (this matters because with other pf commands, the -l/--symlink option
